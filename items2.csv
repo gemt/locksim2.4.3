@@ -1,0 +1,71 @@
+0      1   2   3     4          5        6  7   8    9     10     11   12   13   14 15    16   17      18       19      20     21     22  ;;;;;;;;;;;;;;;;;;;;;;;;
+Slot;Name;Int;Stam;sp;shadow;fire;hit;crit;haste;Spirit;mp5;Gems;Meta;type;value;Set;Value;DPS diff;Value;DPS diff;Source;ItemID;;include
+;;;;;;;;;;;;;;;;;;;;;;;;
+Back;Ruby Drape of the Mysticant;21;22;30;;;18;;;;;;;;;;61,29;0;34,9;0;Karazhan;28766;0;1
+Back;Royal Cloak of the Sunstriders;22;27;44;;;;;;;;;;;;;47,87;-13,43;47,87;12,97;The Eye;29992;0;1
+Back;Brute Cloak of the Ogre-Magi;20;18;28;;;;23;;;;;;;;;52,39;-8,9;52,39;17,49;Gruul's Lair;28797;0;1
+Back;Ancient Spellcloak of the Highborne;15;;36;;;;19;;;;;;;;;54,28;-7,01;54,28;19,38;World Boss;30735;0;1
+Chest;Voidheart Robe;33;42;42;;;13;;;;;YYR;;stam;6;T4;93,56;-58,64;74,5;-38,11;Magtheridon's Lair;28964;24,27648058;1
+Chest;Vestments of the Sea-Witch;28;28;57;;;27;31;;;;YYB;;dmg;5;;152,2;0;112,61;0;Serpentshrine Cavern;30107;24,27648058;1
+Chest;Robe of the Corruptor;33;48;55;;;23;;;;;YYY;;dmg;5;T5;119,91;-32,29;86,19;-26,42;The Eye;30214;24,27648058;1
+Chest;Frozen Shadoweave Robe;20;30;;72;;;;;;;YB;;hit;3;FSW;88,47;-63,72;88,47;-24,14;Tailoring;21871;16,18432039;1
+Feet;Velvet Boots of the Guardian;21;21;49;;;;24;;15;;;;;;;73,86;3,03;73,86;3,03;Serpentshrine Cavern;30067;0;1
+Feet;Frozen Shadoweave Boots;9;15;;57;;;;;;;YB;;hit;3;FSW;70,83;0;70,83;0;Tailoring;21870;16,18432039;1
+Feet;Boots of Incantations;26;37;47;;;17;;;23;;Y;;dmg;2;;88,78;17,95;63,86;-6,98;Badge of Justice;34919;9,714578138;
+Feet;Boots of the Shifting Nightmare;22;41;;59;;18;;;;;;;;;;83,61;18,54;56,86;-8,21;Serpentshrine Cavern;30050;;1
+Feet;Boots of Blasting;25;25;39;;;18;25;;;;;;;;;92,27;21,44;65,88;-4,95;Tailoring;30037;0;
+Finger;Seer's Signet;;24;34;;;;12;;;;;;;;;40,83;-9,85;40,83;-9,85;Reputation;29126;0;1
+Finger;Seal of the Exorcist;;24;28;;;12;;;;;;;;;;42,77;-7,91;25,18;-25,51;Reputation;28555;0;1
+Finger;Ring of Recurrence;15;15;32;;;;19;;;;;;;;;50,68;0;50,68;0;Karazhan;28753;0;1
+Finger;Ring of Endless Coils;;31;37;;;;22;;;;;;;;;52,08;1,4;52,08;1,4;Serpentshrine Cavern;30109;0;1
+Finger;Band of Eternity (1);22;24;29;;;;21;;;;;;;;;52,34;1,66;52,34;1,66;Hyjal Summit;29302;0;1
+Finger;Band of Al'ar;23;24;37;;;;;;;;;;;;;41,95;-8,73;41,95;-8,73;The Eye;29922;0;1
+Finger;Ashyen's Gift;;30;23;;;21;;;;;;;;;;51,47;0,79;20,68;-30;Reputation;29172;0;1
+Finger;Sparking Arcane Ring;14;13;22;;;10;14;;;;;;;;;51,7;1,02;37,04;-13,64;Reputation;28227;;1
+Hand;Voidheart Gloves;28;34;35;;;;22;;;;;;;;T4;60,85;-7,35;60,85;-7,35;Karazhan;28968;0;1
+Hand;Soul-Eater's Handwraps;24;31;36;;;;21;;;;YB;;dmg;4;;75,57;7,37;75,57;7,37;Magtheridon's Lair;28780;16,18432039;1
+Hand;Handwraps of Flowing Thought;22;24;35;;;14;;;;;YB;;hit;3;;76,49;8,28;55,96;-12,24;Karazhan;28507;16,18432039;1
+Hand;Gloves of the Corruptor;24;50;42;;;;25;;;;;;;;T5;68,2;0;68,2;0;Serpentshrine Cavern;30211;0;1
+Hand;Anger-Spark Gloves;;;30;;;20;25;;;;RR;;crit;3;;96,43;28,23;67,1;-1,1;World Boss;30725;18,74982721;1
+Head;Voidheart Crown;39;36;40;;;;19;;;;R;1;hit;4;T4;130,33;0;124,46;0;Karazhan;28963;13,95717157;1
+Head;Spellstrike Hood;12;16;46;;;16;24;;;;BYR;;stam;6;Spellstrike;114,15;-16,18;90,69;-33,77;Craft;24266;24,27648058;1
+Head;Hood of the Corruptor;33;57;55;;;;31;;;;B;1;dmg;5;T5;146,85;16,52;146,85;22,38;Serpentshrine Cavern;30212;8,991289105;1
+Head;Cowl of the Grand Engineer;27;22;53;;;16;35;;;;YYB;;dmg;5;;135,51;5,19;112,05;-12,41;The Eye;29986;24,27648058;1
+;;;;;;;;;;;;;;;;;;;;;;;;
+Leg;Voidheart Leggings;38;42;49;;;17;25;;;;;;;;T4;104,71;-18,44;79,78;-11,11;Gruul's Lair;28966;0;1
+Leg;Trousers of the Astromancer;36;33;81;;;;;;22;;BYB;;dmg;5;;88,4;-34,75;88,4;-2,49;The Eye;29972;0;1
+Leg;Spellstrike Pants;8;12;46;;;22;26;;;;BYR;;stam;6;Spellstrike;123,15;0;90,89;0;Craft;24262;24,27648058;1
+Leg;Leggings of the Seventh Circle;22;;50;;;18;25;;;;RYY;;dmg;5;;125,31;2,16;98,92;8,03;World Boss;30734;24,27648058;1
+Leg;Leggings of the Corruptor;32;48;55;;;24;32;;;;Y;;stam;3;T5;132;8,85;96,81;5,92;Serpentshrine Cavern;30213;7,916320317;1
+Neck;Ritssyn's Lost Pendant;;24;;51;;;;;;;;;;;;45,86;-6,54;45,86;-6,54;Karazhan;30666;0;1
+Neck;Pendant of the Lost Ages;17;27;36;;;;;;;;;;;;;38,79;-13,61;38,79;-13,61;Serpentshrine Cavern;30008;0;1
+Neck;Brooch of Unquenchable Fury;21;24;26;;;15;;;;;;;;;;53,3;0,9;31,3;-21,09;Karazhan;28530;0;
+Neck;Brooch of Unquenchable Fury;21;24;26;;;15;;;;;;;;;;51,65;0,26;29,36;-22,03;Karazhan;28530;;1
+Neck;Adornment of Stolen Souls;20;18;28;;;;23;;;;;;;;;52,39;0;52,39;0;Karazhan;28762;0;1
+Wand;Wand of the Forgotten Star;;;23;;;11;14;;;;;;;;;48,78;21,39;32,65;5,26;The Eye;29982;0;1
+Wand;Tirisfal Wand of Ascendancy;9;10;15;;;11;;;;;;;;;;33,01;5,62;16,88;-10,51;Karazhan;28673;0;1
+Wand;The Black Stalk;;10;20;;;;11;;;;;;;;;27,39;0;27,39;0;Heroic;29350;0;1
+Wand;Nether Core's Control Rod;10;9;13;;;8;;;;;;;;;;27,19;-0,2;15,46;-11,93;Badge of Justice;33192;;1
+Shoulder;Voidheart Mantle;22;26;37;;;14;;;;;BY;;dmg;4;T4;78,28;0;57,76;0;Gruul's Lair;29762;16,18432039;1
+Shoulder;Mantle of the Elven Kings;18;27;39;;;18;25;;17;;;;;;;91,16;12,88;64,77;7,01;The Eye;30024;0;1
+Shoulder;Mantle of the Corruptor;24;37;41;;;18;;;;;YY;;dmg;4;T5;88,5;10,22;62,11;4,35;The Eye;30215;16,18432039;1
+Shoulder;Illidari Shoulderpads;23;34;39;;;;16;;;;YY;;dmg;4;;73,61;-4,67;73,61;15,86;Serpentshrine Cavern;30079;16,18432039;1
+Shoulder;Frozen Shadoweave Shoulders;15;21;;50;;;;;;;YB;;hit;3;FSW;66,8;-11,48;66,8;9,05;Craft;21869;16,18432039;1
+Trinket;Scryer's Bloodgem;;;25;;;32;;;;;;;;;;69,4;4,25;22,48;0;Reputation;29132;;1
+Trinket;Quagmirran's Eye;;;37;;;;;17;;;;;;;;52,26;-12,89;52,26;29,78;Heroic;27683;0;1
+Trinket;Icon of the Silver Crescent;;;69;;;;;;;;;;;;;61,89;-3,26;61,89;39,41;Badge of Justice;29370;;1
+Trinket;Eye of Magtheridon;;;54;;;;;;;;;;;;;48,55;-16,59;48,55;26,07;Magtheridon's Lair;28789;0;1
+Trinket;Darkmoon Card: Crusade;;;78;;;;;;;;;;;;;70,37;5,23;70,37;47,89;World Drop;31856;0;
+Trinket;Arcanist Stone;;;28;;;25;;;;;;;;;;61,83;-3,31;25,18;2,7;pre-BC;19379;;1
+Waist;Girdle of Ruination;13;18;39;;;;20;;;;RY;;stam;4;;57,08;0;57,08;0;Craft;24256;0;1
+Waist;Cord of Screaming Terrors;15;34;50;;;24;;;;;YY;;stam;4;;97,26;42,2;61,59;6,54;Serpentshrine Cavern;60001;;1
+Waist;Fire-Cord of the Magus;23;21;;;60;;30;;;;;;;;;34,34;-22,74;34,34;-22,74;The Eye;30020;0;1
+Waist;Belt of Divine Inspiration;26;27;43;;;;;;;;YB;;dmg;4;;64,66;7,58;64,66;7,58;Gruul's Lair;28799;16,18432039;1
+Waist;Belt of Blasting;;0;50;;;23;30;;;;BY;;dmg;4;;120,52;63,44;86,8;29,72;Craft;30038;16,18432039;
+Wrist;Mindstorm Wristbands;13;13;36;;;;23;;;;;;;;;56,94;0;56,94;0;The Eye;29918;0;1
+Wep;Netherzim+Shadow;18;36;203;51;;;23;;;;;;;;;;;;;;58042;;
+Wep;Netherzim+jewel;36;37;226;;;21;23;;;;;;;;;;;;;;57504;;
+Wep;Netherzim+Fathomstone;30;34;239;;;;46;;;;;;;;;;;;;;58819;;
+Wep;Fang+Fathomstone;32;44;257;;;;44;;;;;;;;;;;;;;58820;;1
+Wep;Fang+Jewel;38;47;244;;;21;21;;;;;;;;;;;;;;58821;;1
+Wep;The Nexus Key;52;76;236;;;;51;;;;;;;;;275,44;8,18;275,44;38,98;The Eye;29988;0;1
