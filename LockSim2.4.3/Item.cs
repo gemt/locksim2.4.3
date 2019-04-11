@@ -96,6 +96,7 @@ namespace LockSim2._4._3
                 if (!anyMissingColor) {
                     var s = stats.First(x => x.Type == SocketBonus.Type);
                     s.Value += SocketBonus.Value;
+                    HasSocketBonus = true;
                 }
             }
         }
@@ -111,15 +112,7 @@ namespace LockSim2._4._3
         public Stat[] Stats { get; }
         public Socket[] Sockets { get; set; }
         public Stat SocketBonus { get; set; }
-        public bool HasSocketBonus() {
-            bool anyMissingColor = false;
-            foreach (var sock in Sockets) {
-                if (!sock.EquippedGem.Colors.Contains(sock.Color)) {
-                    anyMissingColor = true;
-                }
-            }
-            return !anyMissingColor && Sockets.Length > 0;
-        }
+        public bool HasSocketBonus { get; } = false;
         public ESet? Set { get; }
 
         public int Id { get; }
@@ -136,7 +129,7 @@ namespace LockSim2._4._3
                 ret += $"{s.Color.ToString()}: {s.EquippedGem.Name}";
             }
             if(SocketBonus != null) {
-                if(HasSocketBonus())
+                if(HasSocketBonus)
                     ret += $"\n\tBonus: {SocketBonus.Type.ToString()} {SocketBonus.Value}";
                 else
                     ret += $"\n\tBonus: 0";

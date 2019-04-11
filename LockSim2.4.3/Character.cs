@@ -49,7 +49,25 @@ namespace LockSim2._4._3
             AddStats(ring2);
             AddStats(trinket1);
             AddStats(trinket2);
-            dps = ShadowboltDamage / SBCastFrequency * SbCastRatio;
+            Stats[Stat.ShadSP].Value += (int)T4_2Bonus;
+            Stats[Stat.Sp].Value += (int)SPellstrikeBonus;
+            Stats[Stat.Spirit].Value += 20 + 19 + 50; // buffs
+            Stats[Stat.Spirit].Value += 134; // orc race
+            Stats[Stat.Intel].Value += 40 + 19 + 126; // arcane int, imp gotw, orc race
+            Stats[Stat.Crit].Value += 66; //  totem of wrath
+            Stats[Stat.Hit].Value += 38; // Totem of wrath
+            Stats[Stat.ShadSP].Value += 80; // pure death
+            Stats[Stat.Sp].Value += 42 + 130 + 101 + 23; // wizard oil, demonic aegis, wrath of air, foodbuff
+            // Kings
+            Stats[Stat.Spirit].Value += (int)Math.Round(Stats[Stat.Spirit].Value * 0.1, MidpointRounding.ToEven);
+            Stats[Stat.Intel].Value += (int)Math.Round(Stats[Stat.Intel].Value * 0.1, MidpointRounding.ToEven);
+
+            Stats[Stat.Spirit].Value -= (int)Math.Round(Stats[Stat.Spirit].Value * 0.05, MidpointRounding.ToEven); // demonic embrace reduction
+
+            Stats[Stat.Sp].Value += (int)Math.Round(Stats[Stat.Spirit].Value * 0.1, MidpointRounding.ToEven); // imp divine spirit
+            dps = (ShadowboltDamage / SBCastFrequency) * SbCastRatio;
+
+
 
             /*
             string names = "";
@@ -70,15 +88,13 @@ namespace LockSim2._4._3
             }
             */
         }
-
         public string Hash { get; }
         void AddStats(Item itm) {
             foreach(var stat in itm.Stats) {
                 Stats[stat.Type].Value += stat.Value;
             }
         }
-        double charVal = 0;
-        public Guid CharacterId = Guid.NewGuid();
+        //double charVal = 0;
         public Stat[] Stats { get; }
         public Item[] Items { get; }
 
@@ -91,26 +107,17 @@ namespace LockSim2._4._3
 
         int ShadowDmg {
             get {
-                return
-                    Stats[Stat.Sp].Value
-                    + Stats[Stat.ShadSP].Value
-                    + 23 // foodbuff
-                    + 42 // wizoil
-                    + 130 // demonic aegis
-                    + 80 // pure death
-                    + 24 // divine spirit?
-                    + 101 // wrath of air
-                    ;
+                return Stats[Stat.Sp].Value + Stats[Stat.ShadSP].Value;
             }
         }
+
         double Haste { get {
-                return 
-                    (Stats[Stat.Haste].Value + QuagHaste)
-                    / 15.77;
+                return Stats[Stat.Haste].Value / 15.77;
             } }
+
         double Hit {
             get {
-                return Math.Min(16.0, Stats[Stat.Hit].Value / 12.6 + 3);//3=shaman totem
+                return Math.Min(16.0, Stats[Stat.Hit].Value / 12.6);//3=shaman totem
             }
         }
         double Crit {
@@ -148,12 +155,6 @@ namespace LockSim2._4._3
                 ? (1.0 - Math.Pow((1.0 - 0.05), (15.0 * LandedSpellsPerSec))) * 92
                 : 0;
             } }
-        double QuagHaste { get {
-                if (Trinket1.Id == 27683 || Trinket2.Id == 27683)
-                    return 27.0; // should be calc below, but circular calculation of haste so dosent work without some trickery...
-                    //return 320.0 * 6.0 / (45.0 + 9.0 / LandedSpellsPerSec);
-                return 0.0;
-            } }
         double LandedSpellsPerSec {
             get {
                 return (1.0 - Math.Max(1.0, 17.0 - Hit) / 100.0) * (1.0/SBCastFrequency);
@@ -164,7 +165,7 @@ namespace LockSim2._4._3
             }
         }
         double SbCastRatio { get {
-                return 0.94; // XXX: should take LT frequency into account, does not yet....
+                return 0.93; // XXX: should take LT frequency into account, does not yet....
             } }
         /*
         double LtMana { get {
@@ -197,11 +198,12 @@ namespace LockSim2._4._3
                 DPS, 
                 ShadowboltDamage,
                 ShadowDmg,
-                Stats[Stat.Hit].Value / 12.6 + 3, 
+                Hit,
                 Crit,
                 Haste,
                 GloveEnchant.Value,
                 ((Stat.eStat)GloveEnchant.Type).ToString());
+
             for(int i = 0; i < Item.Wep+1; i++) {
                 var slot = i;
                 var itm = Items.First(x => x.Slot == slot);
@@ -218,7 +220,7 @@ namespace LockSim2._4._3
                         sock.Color.ToString(),
                         sock.EquippedGem.Name);
                 }
-                if (itm.HasSocketBonus()) {
+                if (itm.HasSocketBonus) {
                     ret += $"Bonus: {itm.SocketBonus.Value}{((Stat.eStat)itm.SocketBonus.Type).ToString()}";
 
                 }

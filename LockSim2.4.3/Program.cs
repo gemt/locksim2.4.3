@@ -10,6 +10,10 @@ using System.Threading.Tasks;
 
 namespace LockSim2._4._3
 {
+    /// <summary>
+    /// generate list of indexes for all gemslots (itemIndex,gemIndex)
+    /// use combinator lib on list, choose 2, to get all valid combinations of the 2 epic unique gems
+    /// </summary>
     class Program
     {
         static List<(Item, Item)> RingPairs_Static = new List<(Item, Item)>();
@@ -88,9 +92,9 @@ namespace LockSim2._4._3
 
 
         static void Main(string[] args) {
-            var lines = File.ReadAllLines(@"C:\Users\G3m7\Documents\git\LockSim2.4.3\items2.csv");
+            var lines = File.ReadAllLines(@"C:\Users\G3m7\Documents\git\LockSim2.4.3\minimal.csv");
             List<Item> items = new List<Item>();
-            for(int i = 2; i < lines.Length; i++) {
+            for(int i = 0; i < lines.Length; i++) {
                 var line = lines[i]; 
                 var stats = line.Split(';');
                 var itemCombs = Create(stats);
@@ -195,7 +199,7 @@ namespace LockSim2._4._3
             var a = orderedCharacters.ElementAt(0);
             var b = orderedCharacters.ElementAt(1);
             Console.WriteLine(orderedCharacters.ElementAt(0).ToString());
-            Console.WriteLine(orderedCharacters.ElementAt(1).ToString());
+            //Console.WriteLine(orderedCharacters.ElementAt(1).ToString());
             //Foo(ItemBySlot, new Dictionary<Item.ESlot, Item>(), Item.ESlot.Head, characters);
             //var ordered = characters.OrderByDescending(x => x.DPS).ToList();
             //for(int i = 0; i < 10; i++) {
@@ -328,6 +332,7 @@ namespace LockSim2._4._3
             */
             //socket bonus 
             List<Socket> chosenSocketsBonus = new List<Socket>();
+            
             {
                 var itemStats = new Stat[9];
                 itemStats[0] = new Stat(Stat.Intel, intellect);
@@ -358,7 +363,7 @@ namespace LockSim2._4._3
                     chosenSocketsBonus.Add(new Socket(eColor.Meta, Gem.MetaGem));
                 items.Add(new Item(slot, name, itemStats, chosenSocketsBonus.ToArray(), socketBonus, set, itemId * 100));
             }
-
+            
             // red socket
             {
                 var itemStats = new Stat[9];
@@ -375,7 +380,7 @@ namespace LockSim2._4._3
                 bool anyNewGems = false;
                 for (int i = 0; i < sockets.Count; i++) {
                     chosenSockets.Add(new Socket(sockets[i], Gem.Gems[2]));
-                    if (chosenSockets[i].EquippedGem != chosenSocketsBonus[i].EquippedGem)
+                    //if (chosenSockets[i].EquippedGem != chosenSocketsBonus[i].EquippedGem)
                         anyNewGems = true;
                 }
 
@@ -386,8 +391,63 @@ namespace LockSim2._4._3
                     items.Add(new Item(slot, name, itemStats, chosenSockets.ToArray(), socketBonus, set, itemId * 100+1));
                 }
             }
-            
-            return items;
+            // vestments of sea wich, creating some additional copies with epic gems
+            if(itemId == 30107) { // YYB
+                {   // hitsp+hitstam
+                    var itemStats = new Stat[9];
+                    itemStats[0] = new Stat(Stat.Intel, intellect);
+                    itemStats[1] = new Stat(Stat.Stam, stam);
+                    itemStats[2] = new Stat(Stat.Sp, sp);
+                    itemStats[3] = new Stat(Stat.ShadSP, shadow);
+                    itemStats[4] = new Stat(Stat.Hit, hit);
+                    itemStats[5] = new Stat(Stat.Crit, crit);
+                    itemStats[6] = new Stat(Stat.Haste, haste);
+                    itemStats[7] = new Stat(Stat.Spirit, spirit);
+                    itemStats[8] = new Stat(Stat.Mp5, mp5);
+                    List<Socket> chosenSockets = new List<Socket>();
+                    chosenSockets.Add(new Socket(sockets[0], Gem.HitSp));
+                    chosenSockets.Add(new Socket(sockets[1], Gem.Gems[1]));
+                    chosenSockets.Add(new Socket(sockets[2], Gem.HitStam));
+                    items.Add(new Item(slot, name, itemStats, chosenSockets.ToArray(), socketBonus, set, itemId * 100 + 2));
+                }
+                {   // hitsp
+                    var itemStats = new Stat[9];
+                    itemStats[0] = new Stat(Stat.Intel, intellect);
+                    itemStats[1] = new Stat(Stat.Stam, stam);
+                    itemStats[2] = new Stat(Stat.Sp, sp);
+                    itemStats[3] = new Stat(Stat.ShadSP, shadow);
+                    itemStats[4] = new Stat(Stat.Hit, hit);
+                    itemStats[5] = new Stat(Stat.Crit, crit);
+                    itemStats[6] = new Stat(Stat.Haste, haste);
+                    itemStats[7] = new Stat(Stat.Spirit, spirit);
+                    itemStats[8] = new Stat(Stat.Mp5, mp5);
+                    List<Socket> chosenSockets = new List<Socket>();
+                    chosenSockets.Add(new Socket(sockets[0], Gem.HitSp));
+                    chosenSockets.Add(new Socket(sockets[1], Gem.Gems[1]));
+                    chosenSockets.Add(new Socket(sockets[2], Gem.Gems[0]));
+                    items.Add(new Item(slot, name, itemStats, chosenSockets.ToArray(), socketBonus, set, itemId * 100 + 3));
+                }
+
+                {   // hitstam
+                    var itemStats = new Stat[9];
+                    itemStats[0] = new Stat(Stat.Intel, intellect);
+                    itemStats[1] = new Stat(Stat.Stam, stam);
+                    itemStats[2] = new Stat(Stat.Sp, sp);
+                    itemStats[3] = new Stat(Stat.ShadSP, shadow);
+                    itemStats[4] = new Stat(Stat.Hit, hit);
+                    itemStats[5] = new Stat(Stat.Crit, crit);
+                    itemStats[6] = new Stat(Stat.Haste, haste);
+                    itemStats[7] = new Stat(Stat.Spirit, spirit);
+                    itemStats[8] = new Stat(Stat.Mp5, mp5);
+                    List<Socket> chosenSockets = new List<Socket>();
+                    chosenSockets.Add(new Socket(sockets[0], Gem.Gems[1]));
+                    chosenSockets.Add(new Socket(sockets[1], Gem.Gems[1]));
+                    chosenSockets.Add(new Socket(sockets[2], Gem.HitStam));
+                    items.Add(new Item(slot, name, itemStats, chosenSockets.ToArray(), socketBonus, set, itemId * 100 + 4));
+                }
+            }
+
+                return items;
         }
     }
 }
