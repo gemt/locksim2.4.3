@@ -16,7 +16,7 @@ namespace LockSim2._4._3
 
         public static Gem MetaGem = new Gem { Name = "Chaotic Skyfire Diamond", Colors = new eColor[] { eColor.Meta }, Stats = new Stat[] { new Stat(Stat.Crit, 12) }, Id=5 };
 
-        public static Gem HitSp=  new Gem{Name = "Shining Fire Opal", Colors = new eColor[]{eColor.Red, eColor.Yellow }, Stats = new Stat[]{new Stat(Stat.Sp, 6), new Stat(Stat.Hit, 4) },Id=6};
+        public static Gem HitSp=  new Gem{Name = "Shining Fire Opal", Colors = new eColor[]{eColor.Red, eColor.Yellow }, Stats = new Stat[]{new Stat(Stat.Sp, 6), new Stat(Stat.Hit, 5) },Id=6};
         public static Gem HitStam = new Gem { Name = "Vivid Crysophase", Colors = new eColor[] { eColor.Yellow, eColor.Blue}, Stats = new Stat[] { new Stat(Stat.Hit, 5), new Stat(Stat.Stam, 6) }, Id = 7 };
         //public static Gem CritSp = new Gem { Name = "Potent Fire Opal", Colors = new eColor[] { eColor.Red, eColor.Yellow }, Stats = new Stat[] { new Stat(Stat.Sp, 9), new Stat(Stat.Crit, 5) }, Id = 7 };
 

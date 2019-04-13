@@ -30,7 +30,7 @@ Hand;Voidheart Gloves;28;34;35;;;;22;;;;;;;;T4;60,85;-7,35;60,85;-7,35;Karazhan;
 Hand;Soul-Eater's Handwraps;24;31;36;;;;21;;;;YB;;dmg;4;;75,57;7,37;75,57;7,37;Magtheridon's Lair;28780;16,18432039;1
 Hand;Handwraps of Flowing Thought;22;24;35;;;14;;;;;YB;;hit;3;;76,49;8,28;55,96;-12,24;Karazhan;28507;16,18432039;1
 Hand;Gloves of the Corruptor;24;50;42;;;;25;;;;;;;;T5;68,2;0;68,2;0;Serpentshrine Cavern;30211;0;1
-Hand;Anger-Spark Gloves;;;30;;;20;25;;;;RR;;crit;3;;96,43;28,23;67,1;-1,1;World Boss;30725;18,74982721;1
+Hand;Anger-Spark Gloves;;;30;;;20;25;;;;RR;;crit;3;;96,43;28,23;67,1;-1,1;World Boss;30725;18,74982721;
 ;;;;;;;;;;;;;;;;;;;;;;;;
 Head;Voidheart Crown;39;36;40;;;;19;;;;R;1;hit;4;T4;130,33;0;124,46;0;Karazhan;28963;13,95717157;1
 Head;Spellstrike Hood;12;16;46;;;16;24;;;;BYR;;stam;6;Spellstrike;114,15;-16,18;90,69;-33,77;Craft;24266;24,27648058;1
@@ -40,7 +40,7 @@ Head;Cowl of the Grand Engineer;27;22;53;;;16;35;;;;YYB;;dmg;5;;135,51;5,19;112,
 Leg;Voidheart Leggings;38;42;49;;;17;25;;;;;;;;T4;104,71;-18,44;79,78;-11,11;Gruul's Lair;28966;0;1
 Leg;Trousers of the Astromancer;36;33;81;;;;;;22;;BYB;;dmg;5;;88,4;-34,75;88,4;-2,49;The Eye;29972;0;1
 Leg;Spellstrike Pants;8;12;46;;;22;26;;;;BYR;;stam;6;Spellstrike;123,15;0;90,89;0;Craft;24262;24,27648058;1
-Leg;Leggings of the Seventh Circle;22;;50;;;18;25;;;;RYY;;dmg;5;;125,31;2,16;98,92;8,03;World Boss;30734;24,27648058;1
+Leg;Leggings of the Seventh Circle;22;;50;;;18;25;;;;RYY;;dmg;5;;125,31;2,16;98,92;8,03;World Boss;30734;24,27648058;
 Leg;Leggings of the Corruptor;32;48;55;;;24;32;;;;Y;;stam;3;T5;132;8,85;96,81;5,92;Serpentshrine Cavern;30213;7,916320317;1
 ;;;;;;;;;;;;;;;;;;;;;;;;
 Neck;Ritssyn's Lost Pendant;;24;;51;;;;;;;;;;;;45,86;-6,54;45,86;-6,54;Karazhan;30666;0;1
@@ -49,7 +49,7 @@ Neck;Brooch of Unquenchable Fury;21;24;26;;;15;;;;;;;;;;53,3;0,9;31,3;-21,09;Kar
 Neck;Brooch of Unquenchable Fury;21;24;26;;;15;;;;;;;;;;51,65;0,26;29,36;-22,03;Karazhan;28530;;1
 Neck;Adornment of Stolen Souls;20;18;28;;;;23;;;;;;;;;52,39;0;52,39;0;Karazhan;28762;0;1
 ;;;;;;;;;;;;;;;;;;;;;;;;
-Wand;Wand of the Forgotten Star;;;23;;;11;14;;;;;;;;;48,78;21,39;32,65;5,26;The Eye;29982;0;1
+Wand;Wand of the Forgotten Star;;;23;;;11;14;;;;;;;;;48,78;21,39;32,65;5,26;The Eye;29982;0;
 Wand;Tirisfal Wand of Ascendancy;9;10;15;;;11;;;;;;;;;;33,01;5,62;16,88;-10,51;Karazhan;28673;0;1
 Wand;The Black Stalk;;10;20;;;;11;;;;;;;;;27,39;0;27,39;0;Heroic;29350;0;1
 Wand;Nether Core's Control Rod;10;9;13;;;8;;;;;;;;;;27,19;-0,2;15,46;-11,93;Badge of Justice;33192;;1
@@ -79,4 +79,4 @@ Wep;Netherzim+jewel;36;37;226;;;21;23;;;;;;;;;;;;;;57504;;
 Wep;Netherzim+Fathomstone;30;34;239;;;;46;;;;;;;;;;;;;;58819;;
 Wep;Fang+Fathomstone;32;44;257;;;;44;;;;;;;;;;;;;;58820;;1
 Wep;Fang+Jewel;38;47;244;;;21;21;;;;;;;;;;;;;;58821;;1
-Wep;The Nexus Key;52;76;236;;;;51;;;;;;;;;275,44;8,18;275,44;38,98;The Eye;29988;0;1
+Wep;The Nexus Key;52;76;236;;;;51;;;;;;;;;275,44;8,18;275,44;38,98;The Eye;29988;0;

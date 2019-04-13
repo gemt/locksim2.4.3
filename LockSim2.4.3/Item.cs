@@ -45,7 +45,7 @@ namespace LockSim2._4._3
             Spellstrike
         }
 
-        public Item(int slot, string name, Stat[] stats, Socket[] sockets, Stat socketBonus, ESet? set, int id) {
+        public Item(int slot, string name, Stat[] stats, Socket[] sockets, Stat? socketBonus, ESet? set, int id) {
             Slot = slot;
             Name = name;
             Stats = stats;
@@ -55,55 +55,48 @@ namespace LockSim2._4._3
             Id = id;
             // Hardcoded "enchants"
             if (slot == Head) {
-                AddStat(new Stat(Stat.Sp, 22));
-                AddStat(new Stat(Stat.Hit, 14));
+                Stats[Stat.Sp].Value += 22;
+                Stats[Stat.Hit].Value += 14;
             }
             if(slot == Shoulder) {
-                AddStat(new Stat(Stat.Crit, 15));
-                AddStat(new Stat(Stat.Sp, 12));
+                Stats[Stat.Crit].Value += 15;
+                Stats[Stat.Sp].Value += 12;
             }
             if(slot == Leg) {
-                AddStat(new Stat(Stat.Sp, 35));
-                AddStat(new Stat(Stat.Stam, 20));
+                Stats[Stat.Sp].Value += 35;
+                Stats[Stat.Stam].Value += 20;
             }
             if(slot == Chest) {
-                AddStat(new Stat(Stat.Intel, 6));
-                AddStat(new Stat(Stat.Spirit, 6));
-                AddStat(new Stat(Stat.Stam, 6));
+                Stats[Stat.Intel].Value += 6;
+                Stats[Stat.Spirit].Value += 6;
+                Stats[Stat.Stam].Value += 6;
             }
             if (slot == Wrist) {
-                AddStat(new Stat(Stat.Sp, 15));
+                Stats[Stat.Sp].Value += 15;
             }
             if(slot == Finger) {
-                AddStat(new Stat(Stat.Sp, 12));
+                Stats[Stat.Sp].Value += 12;
             }
             if(slot == Wep) {
-                AddStat(new Stat(Stat.ShadSP, 54));
+                Stats[Stat.ShadSP].Value += 54;
             }
 
             // applying gem stats to stats
             if (Sockets != null && Sockets.Length != 0) {
                 bool anyMissingColor = false;
                 foreach (var sock in Sockets) {
-                    foreach (var Stats in sock.EquippedGem.Stats) {
-                        var s = stats.First(x => x.Type == Stats.Type);
-                        s.Value += Stats.Value;
+                    foreach (var st in sock.EquippedGem.Stats) {
+                        Stats[st.Type].Value += st.Value;
                     }
                     if (!sock.EquippedGem.Colors.Contains(sock.Color)) {
                         anyMissingColor = true;
                     }
                 }
                 if (!anyMissingColor) {
-                    var s = stats.First(x => x.Type == SocketBonus.Type);
-                    s.Value += SocketBonus.Value;
+                    Stats[SocketBonus.Value.Type].Value += SocketBonus.Value.Value;
                     HasSocketBonus = true;
                 }
             }
-        }
-
-        void AddStat(Stat stat) {
-            var existing = Stats.Single(x => x.Type == stat.Type);
-            existing.Value += stat.Value;
         }
 
         public int Slot { get; }
@@ -111,7 +104,7 @@ namespace LockSim2._4._3
         
         public Stat[] Stats { get; }
         public Socket[] Sockets { get; set; }
-        public Stat SocketBonus { get; set; }
+        public Stat? SocketBonus { get; set; }
         public bool HasSocketBonus { get; } = false;
         public ESet? Set { get; }
 
@@ -129,8 +122,10 @@ namespace LockSim2._4._3
                 ret += $"{s.Color.ToString()}: {s.EquippedGem.Name}";
             }
             if(SocketBonus != null) {
-                if(HasSocketBonus)
-                    ret += $"\n\tBonus: {SocketBonus.Type.ToString()} {SocketBonus.Value}";
+                if (HasSocketBonus) {
+                    Stat.eStat es = (Stat.eStat)SocketBonus.Value.Type;
+                    ret += $"\n\tBonus: {es.ToString()} {SocketBonus.Value.Value}";
+                }
                 else
                     ret += $"\n\tBonus: 0";
             }

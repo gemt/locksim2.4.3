@@ -20,20 +20,23 @@ namespace LockSim2._4._3
         static List<(Item, Item)> TrinketPairs_Static = new List<(Item, Item)>();
         static Stat[] GloveEnchants = new Stat[] { new Stat(Stat.Hit, 15), new Stat(Stat.Sp, 20) };
         static long expectedCount = 0;
-        static long processCount = 0;
-
+        static double globalMaxDps = 0;
+        static Mutex mut = new Mutex();
         public class Worker
         {
+            public long processCount = 0;
             public Thread Thread { get; }
             double minDps = 9999999;
+            double maxDps = 0;
             int minIdx = 0;
             int charIdx = 0;
-            (Item, Item) RingPair;
+            (Item, Item) TrinketPair;
 
             public Character[] characters = new Character[100];
             List<Item>[] ItemBySlot;
-            public Worker((Item,Item) ringPair, List<Item>[] ItemBySlot) {
-                RingPair = ringPair;
+
+            public Worker((Item, Item) trinketPair, List<Item>[] ItemBySlot) {
+                TrinketPair = trinketPair;
                 this.ItemBySlot = ItemBySlot;
                 Thread = new Thread(Run);
                 Thread.Start();
@@ -44,43 +47,65 @@ namespace LockSim2._4._3
                 Foo(new Item[12], Item.Head);
             }
 
+            
+            List<Character> ProcessCharacter(Item[] items, (Item,Item) rings, (Item,Item) trinkets, Stat gloveEnchant) {
+                var ret = new List<Character>();
+                var character = new Character(items, rings.Item1, rings.Item2, trinkets.Item1, trinkets.Item2, gloveEnchant);
+                ret.Add(character);
+                return ret;
+            }
+
+            void CheckNewCharacter(Character character) {
+                ++processCount;
+                if (charIdx < 100) {
+                    characters[charIdx] = character;
+                    if (character.DPS < minDps) {
+                        minDps = character.DPS;
+                        minIdx = charIdx;
+                    }
+                    charIdx++;
+                } else {
+                    if (character.DPS > minDps) {
+                        characters[minIdx] = character;
+                        double min = 99999;
+
+                        for (int z = 0; z < characters.Length; z++) {
+                            if (characters[z].DPS < min) {
+                                min = characters[z].DPS;
+                                minIdx = z;
+                            }
+                        }
+
+                        minDps = min;
+                    }
+                    if (character.DPS > maxDps){
+                        maxDps = character.DPS;
+                        lock (mut) {
+                            if(character.DPS > globalMaxDps) {
+                                globalMaxDps = character.DPS;
+                                Console.WriteLine(character.ToString());
+                            }
+                        }
+                    }
+                }
+            }
+
             void Foo(Item[] selectedItems, int itemSlot) {
                 var thisGroup = ItemBySlot[itemSlot];
                 for (int i = 0; i < thisGroup.Count; i++) {
                     selectedItems[itemSlot] = thisGroup[i];
 
                     if (itemSlot == Item.Wep) {
-                        foreach (var trinketPair in TrinketPairs_Static) {
+                        //foreach (var trinketPair in TrinketPairs_Static) {
+                        foreach (var RingPair in RingPairs_Static) {
                             foreach (var gloveEnchant in GloveEnchants) {
-                                var character = new Character(selectedItems, RingPair.Item1, RingPair.Item2, trinketPair.Item1, trinketPair.Item2, gloveEnchant);
-                                /*
-                                if (!charIdentifiers.Add(character.Hash)) {
-                                    throw new Exception();
-                                }
-                                */
-                                if (charIdx < 100) {
-                                    characters[charIdx] = character;
-                                    if (character.DPS < minDps) {
-                                        minDps = character.DPS;
-                                        minIdx = charIdx;
-                                    }
-                                    charIdx++;
-                                } else {
-                                    if (character.DPS > minDps) {
-                                        characters[minIdx] = character;
-                                        double min = 99999;
 
-                                        for (int z = 0; z < characters.Length; z++) {
-                                            if (characters[z].DPS < min) {
-                                                min = characters[z].DPS;
-                                                minIdx = z;
-                                            }
-                                        }
+                                var newCharacters = ProcessCharacter(selectedItems, RingPair, TrinketPair, gloveEnchant);
 
-                                        minDps = min;
-                                    }
+                                foreach (var character in newCharacters) {
+                                    CheckNewCharacter(character);
                                 }
-                                Interlocked.Increment(ref processCount);
+                                //Interlocked.Increment(ref processCount);
                             }
                         }
                     } else {
@@ -92,7 +117,7 @@ namespace LockSim2._4._3
 
 
         static void Main(string[] args) {
-            var lines = File.ReadAllLines(@"C:\Users\G3m7\Documents\git\LockSim2.4.3\minimal.csv");
+            var lines = File.ReadAllLines(@"C:\Users\G3m7\Documents\git\LockSim2.4.3\items2.csv");
             List<Item> items = new List<Item>();
             for(int i = 0; i < lines.Length; i++) {
                 var line = lines[i]; 
@@ -116,7 +141,7 @@ namespace LockSim2._4._3
             var nonDistinct = items.Where(x => !distinctItems.Contains(x.Id));
             Debug.Assert(items.Select(x => x.Id).Distinct().Count() == items.Count);
 
-            List<Item>[] ItemBySlot = new List<Item>[12];
+            List<Item>[] ItemBySlot = new List<Item>[14];
             ItemBySlot[Item.Head] = items.Where(x => x.Slot == Item.Head).ToList();
             ItemBySlot[Item.Neck] = items.Where(x => x.Slot == Item.Neck).ToList();
             ItemBySlot[Item.Shoulder] = items.Where(x => x.Slot == Item.Shoulder).ToList();
@@ -129,7 +154,6 @@ namespace LockSim2._4._3
             ItemBySlot[Item.Feet] = items.Where(x => x.Slot == Item.Feet).ToList();
             ItemBySlot[Item.Wand] = items.Where(x => x.Slot == Item.Wand).ToList();
             ItemBySlot[Item.Wep] = items.Where(x => x.Slot == Item.Wep).ToList();
-
             var fingers = items.Where(x => x.Slot == Item.Finger).ToList();
             var fingerCombos = new Combinations<Item>(fingers, 2);
             List<(Item, Item)> ringPairs = new List<(Item, Item)>();
@@ -158,19 +182,25 @@ namespace LockSim2._4._3
                 * (long)ItemBySlot[Item.Feet].Count
                 * (long)ItemBySlot[Item.Wand].Count
                 * (long)ItemBySlot[Item.Wep].Count;
+
+            
             Console.WriteLine($"Starting processing of {expectedCount} combinations");
-            Worker[] threads = new Worker[RingPairs_Static.Count];
-            for(int i = 0; i < RingPairs_Static.Count; i++) {
-                threads[i] = new Worker(RingPairs_Static[i], ItemBySlot);
+
+            Worker[] threads = new Worker[TrinketPairs_Static.Count];
+            for (int i = 0; i < TrinketPairs_Static.Count; i++) {
+                threads[i] = new Worker(TrinketPairs_Static[i], ItemBySlot);
             }
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
+            
             while(threads.Any(x => x.Thread.IsAlive)) {
-                for (int i = 0; i < RingPairs_Static.Count; i++) {
-                    threads[i].Thread.Join(1);
-                }
+                long processCount = 0;
                 Thread.Sleep(1000);
+                for (int i = 0; i < TrinketPairs_Static.Count; i++) {
+                    threads[i].Thread.Join(1);
+                    processCount += threads[i].processCount;
+                }
                 var pct = 100.0 / expectedCount * processCount;
 
                 double nPercentage = (double)Math.Max(processCount,1) / (double)expectedCount;
@@ -197,13 +227,13 @@ namespace LockSim2._4._3
                 }
             }
             var a = orderedCharacters.ElementAt(0);
-            var b = orderedCharacters.ElementAt(1);
+            //var b = orderedCharacters.ElementAt(1);
             Console.WriteLine(orderedCharacters.ElementAt(0).ToString());
             //Console.WriteLine(orderedCharacters.ElementAt(1).ToString());
             //Foo(ItemBySlot, new Dictionary<Item.ESlot, Item>(), Item.ESlot.Head, characters);
             //var ordered = characters.OrderByDescending(x => x.DPS).ToList();
             //for(int i = 0; i < 10; i++) {
-            //}
+            //}cccd
         }
 
 
@@ -245,15 +275,15 @@ namespace LockSim2._4._3
                 throw new Exception();
             }
             int slot = (int)slotEnum;
-            int.TryParse(stats[2], out int intellect);
-            int.TryParse(stats[3], out int stam);
-            int.TryParse(stats[4], out int sp);
-            int.TryParse(stats[5], out int shadow);
-            int.TryParse(stats[7], out int hit);
-            int.TryParse(stats[8], out int crit);
-            int.TryParse(stats[9], out int haste);
-            int.TryParse(stats[10], out int spirit);
-            int.TryParse(stats[11], out int mp5);
+            short.TryParse(stats[2], out short intellect);
+            short.TryParse(stats[3], out short stam);
+            short.TryParse(stats[4], out short sp);
+            short.TryParse(stats[5], out short shadow);
+            short.TryParse(stats[7], out short hit);
+            short.TryParse(stats[8], out short crit);
+            short.TryParse(stats[9], out short haste);
+            short.TryParse(stats[10], out short spirit);
+            short.TryParse(stats[11], out short mp5);
 
             List<eColor> sockets = new List<eColor>();
             var gems = stats[12];
@@ -269,12 +299,12 @@ namespace LockSim2._4._3
             }
 
             var gemBonusType = stats[14];
-            if (!int.TryParse(stats[15], out int gemBonusVal))
+            if (!short.TryParse(stats[15], out short gemBonusVal))
                 gemBonusVal = 0;
 
             Debug.Assert(gemBonusType.Length > 0 ? gemBonusVal > 0 : gemBonusVal == 0);
 
-            Stat socketBonus = null;
+            Stat? socketBonus = null;
             switch (gemBonusType) {
                 case "dmg": socketBonus = new Stat(Stat.Sp, gemBonusVal); break;
                 case "hit": socketBonus = new Stat(Stat.Hit, gemBonusVal); break;
@@ -391,8 +421,9 @@ namespace LockSim2._4._3
                     items.Add(new Item(slot, name, itemStats, chosenSockets.ToArray(), socketBonus, set, itemId * 100+1));
                 }
             }
+
             // vestments of sea wich, creating some additional copies with epic gems
-            if(itemId == 30107) { // YYB
+            if (itemId == 30107) { // YYB
                 {   // hitsp+hitstam
                     var itemStats = new Stat[9];
                     itemStats[0] = new Stat(Stat.Intel, intellect);
@@ -410,6 +441,7 @@ namespace LockSim2._4._3
                     chosenSockets.Add(new Socket(sockets[2], Gem.HitStam));
                     items.Add(new Item(slot, name, itemStats, chosenSockets.ToArray(), socketBonus, set, itemId * 100 + 2));
                 }
+                /*
                 {   // hitsp
                     var itemStats = new Stat[9];
                     itemStats[0] = new Stat(Stat.Intel, intellect);
@@ -445,9 +477,10 @@ namespace LockSim2._4._3
                     chosenSockets.Add(new Socket(sockets[2], Gem.HitStam));
                     items.Add(new Item(slot, name, itemStats, chosenSockets.ToArray(), socketBonus, set, itemId * 100 + 4));
                 }
+                */
             }
 
-                return items;
+             return items;
         }
     }
 }

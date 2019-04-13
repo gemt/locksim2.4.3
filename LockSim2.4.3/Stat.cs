@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LockSim2._4._3
 {
-    public class Stat
+    public struct Stat
     {
         
         public enum eStat
@@ -23,21 +23,21 @@ namespace LockSim2._4._3
             MAX_STAT
         }
         
-        public static int Intel = 0;
-        public static int Stam = 1;
-        public static int Sp = 2;
-        public static int ShadSP = 3;
-        public static int Hit = 4;
-        public static int Crit = 5;
-        public static int Haste = 6;
-        public static int Spirit = 7;
-        public static int Mp5 = 8;
-        public static int MAX_STAT = 9;
-        public Stat(int type, int value) {
+        public static byte Intel = 0;
+        public static byte Stam = 1;
+        public static byte Sp = 2;
+        public static byte ShadSP = 3;
+        public static byte Hit = 4;
+        public static byte Crit = 5;
+        public static byte Haste = 6;
+        public static byte Spirit = 7;
+        public static byte Mp5 = 8;
+        public static byte MAX_STAT = 9;
+        public Stat(byte type, short value) {
             Type = type;
             Value = value;
         }
-        public int Type { get; }
-        public int Value { get; set; }
+        public byte Type { get; }
+        public short Value { get; set; }
     }
 }

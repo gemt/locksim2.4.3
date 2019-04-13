@@ -49,8 +49,8 @@ namespace LockSim2._4._3
             AddStats(ring2);
             AddStats(trinket1);
             AddStats(trinket2);
-            Stats[Stat.ShadSP].Value += (int)T4_2Bonus;
-            Stats[Stat.Sp].Value += (int)SPellstrikeBonus;
+            Stats[Stat.ShadSP].Value += (short)T4_2Bonus;
+            Stats[Stat.Sp].Value += (short)SPellstrikeBonus;
             Stats[Stat.Spirit].Value += 20 + 19 + 50; // buffs
             Stats[Stat.Spirit].Value += 134; // orc race
             Stats[Stat.Intel].Value += 40 + 19 + 126; // arcane int, imp gotw, orc race
@@ -59,13 +59,13 @@ namespace LockSim2._4._3
             Stats[Stat.ShadSP].Value += 80; // pure death
             Stats[Stat.Sp].Value += 42 + 130 + 101 + 23; // wizard oil, demonic aegis, wrath of air, foodbuff
             // Kings
-            Stats[Stat.Spirit].Value += (int)Math.Round(Stats[Stat.Spirit].Value * 0.1, MidpointRounding.ToEven);
-            Stats[Stat.Intel].Value += (int)Math.Round(Stats[Stat.Intel].Value * 0.1, MidpointRounding.ToEven);
+            Stats[Stat.Spirit].Value += (short)Math.Round(Stats[Stat.Spirit].Value * 0.1, MidpointRounding.ToEven);
+            Stats[Stat.Intel].Value += (short)Math.Round(Stats[Stat.Intel].Value * 0.1, MidpointRounding.ToEven);
 
-            Stats[Stat.Spirit].Value -= (int)Math.Round(Stats[Stat.Spirit].Value * 0.05, MidpointRounding.ToEven); // demonic embrace reduction
+            Stats[Stat.Spirit].Value -= (short)Math.Round(Stats[Stat.Spirit].Value * 0.05, MidpointRounding.ToEven); // demonic embrace reduction
 
-            Stats[Stat.Sp].Value += (int)Math.Round(Stats[Stat.Spirit].Value * 0.1, MidpointRounding.ToEven); // imp divine spirit
-            dps = (ShadowboltDamage / SBCastFrequency) * SbCastRatio;
+            Stats[Stat.Sp].Value += (short)Math.Round(Stats[Stat.Spirit].Value * 0.1, MidpointRounding.ToEven); // imp divine spirit
+            DPS = (ShadowboltDamage / SBCastFrequency) * SbCastRatio;
 
 
 
@@ -94,7 +94,6 @@ namespace LockSim2._4._3
                 Stats[stat.Type].Value += stat.Value;
             }
         }
-        //double charVal = 0;
         public Stat[] Stats { get; }
         public Item[] Items { get; }
 
@@ -123,7 +122,7 @@ namespace LockSim2._4._3
         double Crit {
             get {
                 return 
-                    + 1.701+ Intellect / 82.0
+                    + 1.701+ Stats[Stat.Intel].Value / 82.0
                     + Stats[Stat.Crit].Value / 22.08
                     + 3 + 5; //talents
             }
@@ -135,14 +134,16 @@ namespace LockSim2._4._3
                 return 1.0;
             }
         }
-        double Misery { get { return 1.05; } }
-        double Sw { get { return 1.1; } }
-        double Sm { get { return 0.0; } }
-        double ImpSB { get { return 5.0; } }
-        double IsbUptime { get { return 0.75; } }
-        double Cos { get { return 1.1; } } // no malediction in raid
-        double Ruin { get { return 1.0; } }
-        double Sf { get { return 5.0; } }
+        const double Misery = 1.05;
+        const double Sw = 1.1;
+        const double Sm = 0.0;
+        const double ImpSB = 5.0;
+        const double IsbUptime = 0.75;
+        const double Cos = 1.1;
+        const double Ruin = 1.0;
+        const double Sf = 5.0;
+        const double SbCastRatio = 0.93;
+
         double T4_2Bonus {
             get {
                 return Items.Count(x => x.Set == Item.ESet.T4) >= 2
@@ -164,18 +165,6 @@ namespace LockSim2._4._3
                 return 2.55 * (1.0 - (Haste / 100.0));
             }
         }
-        double SbCastRatio { get {
-                return 0.93; // XXX: should take LT frequency into account, does not yet....
-            } }
-        /*
-        double LtMana { get {
-                return Mana * 0.2;
-            } }
-        int Mana { get {
-                return 1; // XXX: todo
-            } }
-        */
-        int Intellect { get { return Stats[Stat.Intel].Value; } }
         public double ShadowboltDamage{
             get {
                 double v = (572.0 + ShadowDmg * (0.856 + Sf * 0.04));
@@ -187,12 +176,8 @@ namespace LockSim2._4._3
             }
         }
 
-        readonly double dps;
-        public double DPS {
-            get {
-                return dps;
-            } }
-
+        public readonly double DPS;
+        
         public override string ToString() {
             var ret = String.Format("DPS: {0,6:0.00}   SBdmg: {1,6:0.00}   SP: {2,6:0.00}   Hit: {3,6:0.00}%   Crit: {4,4:0.00}   Haste: {5,4:0.00}% GloveEnchant: {6}{7}\n", 
                 DPS, 
@@ -221,7 +206,8 @@ namespace LockSim2._4._3
                         sock.EquippedGem.Name);
                 }
                 if (itm.HasSocketBonus) {
-                    ret += $"Bonus: {itm.SocketBonus.Value}{((Stat.eStat)itm.SocketBonus.Type).ToString()}";
+                    Stat.eStat es = (Stat.eStat)itm.SocketBonus.Value.Type;
+                    ret += $"Bonus: {itm.SocketBonus.Value.Value}{es.ToString()}";
 
                 }
                 ret += "\n";
