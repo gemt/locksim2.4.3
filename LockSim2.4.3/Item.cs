@@ -48,37 +48,40 @@ namespace LockSim2._4._3
         public Item(int slot, string name, Stat[] stats, Socket[] sockets, Stat? socketBonus, ESet? set, int id) {
             Slot = slot;
             Name = name;
-            Stats = stats;
+            Stats = new short[16];
+            for(int i = 0; i < stats.Length; i++) {
+                Stats[i] = stats[i].Value;
+            }
             Sockets = sockets;
             SocketBonus = socketBonus;
             Set = set;
             Id = id;
             // Hardcoded "enchants"
             if (slot == Head) {
-                Stats[Stat.Sp].Value += 22;
-                Stats[Stat.Hit].Value += 14;
+                Stats[Stat.Sp] += 22;
+                Stats[Stat.Hit] += 14;
             }
             if(slot == Shoulder) {
-                Stats[Stat.Crit].Value += 15;
-                Stats[Stat.Sp].Value += 12;
+                Stats[Stat.Crit] += 15;
+                Stats[Stat.Sp] += 12;
             }
             if(slot == Leg) {
-                Stats[Stat.Sp].Value += 35;
-                Stats[Stat.Stam].Value += 20;
+                Stats[Stat.Sp] += 35;
+                Stats[Stat.Stam] += 20;
             }
             if(slot == Chest) {
-                Stats[Stat.Intel].Value += 6;
-                Stats[Stat.Spirit].Value += 6;
-                Stats[Stat.Stam].Value += 6;
+                Stats[Stat.Intel] += 6;
+                Stats[Stat.Spirit] += 6;
+                Stats[Stat.Stam] += 6;
             }
             if (slot == Wrist) {
-                Stats[Stat.Sp].Value += 15;
+                Stats[Stat.Sp] += 15;
             }
             if(slot == Finger) {
-                Stats[Stat.Sp].Value += 12;
+                Stats[Stat.Sp] += 12;
             }
             if(slot == Wep) {
-                Stats[Stat.ShadSP].Value += 54;
+                Stats[Stat.ShadSP] += 54;
             }
 
             // applying gem stats to stats
@@ -86,26 +89,28 @@ namespace LockSim2._4._3
                 bool anyMissingColor = false;
                 foreach (var sock in Sockets) {
                     foreach (var st in sock.EquippedGem.Stats) {
-                        Stats[st.Type].Value += st.Value;
+                        Stats[st.Type] += st.Value;
                     }
                     if (!sock.EquippedGem.Colors.Contains(sock.Color)) {
                         anyMissingColor = true;
                     }
                 }
                 if (!anyMissingColor) {
-                    Stats[SocketBonus.Value.Type].Value += SocketBonus.Value.Value;
+                    Stats[SocketBonus.Value.Type] += SocketBonus.Value.Value;
                     HasSocketBonus = true;
                 }
             }
+            HasMetaGem = Sockets.Any(x => x.EquippedGem == Gem.MetaGem);
         }
 
-        public int Slot { get; }
-        public string Name { get; }
-        
-        public Stat[] Stats { get; }
-        public Socket[] Sockets { get; set; }
-        public Stat? SocketBonus { get; set; }
-        public bool HasSocketBonus { get; } = false;
+        readonly public int Slot;
+        readonly public string Name;
+
+        public short[] Stats;
+        public Socket[] Sockets;
+        public Stat? SocketBonus;
+        readonly public bool HasSocketBonus = false;
+        readonly public bool HasMetaGem = false;
         public ESet? Set { get; }
 
         public int Id { get; }
@@ -113,8 +118,9 @@ namespace LockSim2._4._3
         public override string ToString() {
             var ret = $"{Slot.ToString()} {Name}\n";
             ret += "\t";
-            foreach(var stat in Stats) {
-                ret += $"{stat.Type.ToString()}: {stat.Value}, ";
+
+            for(int i = 0; i < Stat.MAX_STAT; i++) {
+                ret += $"{((Stat.eStat)i).ToString()}: {Stats[i]}, ";
             }
 
             foreach(var s in Sockets) {

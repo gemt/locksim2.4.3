@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,8 +13,8 @@ namespace LockSim2._4._3
 
         // setbonuses
         public Character(Item[] items, Item ring1, Item ring2, Item trinket1, Item trinket2, Stat gloveEnchant) {
-            Items = new Item[12];
-            Array.Copy(items, Items, 12);
+            Items = items;// new Item[12];
+            //Array.Copy(items, Items, 12);
             Ring1 = ring1;
             Ring2 = ring2;
             Trinket1 = trinket1;
@@ -21,55 +22,16 @@ namespace LockSim2._4._3
 
             GloveEnchant = gloveEnchant;
 
-            Stats = new Stat[9];
-            Stats[0] = new Stat(0, 0);
-            Stats[1] = new Stat(1, 0);
-            Stats[2] = new Stat(2, 0);
-            Stats[3] = new Stat(3, 0);
-            Stats[4] = new Stat(4, 0);
-            Stats[5] = new Stat(5, 0);
-            Stats[6] = new Stat(6, 0);
-            Stats[7] = new Stat(7, 0);
-            Stats[8] = new Stat(8, 0);
-            
-            Stats[gloveEnchant.Type].Value += gloveEnchant.Value;
-            AddStats(Items[Item.Head]);
-            AddStats(Items[Item.Neck]);
-            AddStats(Items[Item.Shoulder]);
-            AddStats(Items[Item.Back]);
-            AddStats(Items[Item.Chest]);
-            AddStats(Items[Item.Wrist]);
-            AddStats(Items[Item.Hand]);
-            AddStats(Items[Item.Waist]);
-            AddStats(Items[Item.Leg]);
-            AddStats(Items[Item.Feet]);
-            AddStats(Items[Item.Wand]);
-            AddStats(Items[Item.Wep]);
-            AddStats(ring1);
-            AddStats(ring2);
-            AddStats(trinket1);
-            AddStats(trinket2);
-            Stats[Stat.ShadSP].Value += (short)T4_2Bonus;
-            Stats[Stat.Sp].Value += (short)SPellstrikeBonus;
-            Stats[Stat.Spirit].Value += 20 + 19 + 50; // buffs
-            Stats[Stat.Spirit].Value += 134; // orc race
-            Stats[Stat.Intel].Value += 40 + 19 + 126; // arcane int, imp gotw, orc race
-            Stats[Stat.Crit].Value += 66; //  totem of wrath
-            Stats[Stat.Hit].Value += 38; // Totem of wrath
-            Stats[Stat.ShadSP].Value += 80; // pure death
-            Stats[Stat.Sp].Value += 42 + 130 + 101 + 23; // wizard oil, demonic aegis, wrath of air, foodbuff
-            // Kings
-            Stats[Stat.Spirit].Value += (short)Math.Round(Stats[Stat.Spirit].Value * 0.1, MidpointRounding.ToEven);
-            Stats[Stat.Intel].Value += (short)Math.Round(Stats[Stat.Intel].Value * 0.1, MidpointRounding.ToEven);
-
-            Stats[Stat.Spirit].Value -= (short)Math.Round(Stats[Stat.Spirit].Value * 0.05, MidpointRounding.ToEven); // demonic embrace reduction
-
-            Stats[Stat.Sp].Value += (short)Math.Round(Stats[Stat.Spirit].Value * 0.1, MidpointRounding.ToEven); // imp divine spirit
+            Stats = new short[16];
+            Stats[gloveEnchant.Type] += gloveEnchant.Value;
+            SetupStatsSimd();
+            AddConstants();
+            Multiplications();
             DPS = (ShadowboltDamage / SBCastFrequency) * SbCastRatio;
 
 
 
-            /*
+#if false
             string names = "";
             foreach(var itm in Items) {
                 names += itm.Name;
@@ -86,54 +48,97 @@ namespace LockSim2._4._3
                 var hash = md5Algorithm.ComputeHash(Encoding.ASCII.GetBytes(names));
                 Hash = BitConverter.ToString(hash).Replace("-", "");
             }
-            */
+#endif
         }
         public string Hash { get; }
-        void AddStats(Item itm) {
-            foreach(var stat in itm.Stats) {
-                Stats[stat.Type].Value += stat.Value;
-            }
+        void SetupStatsSimd() {
+            AddStatsSimd(Items[Item.Head]);
+            AddStatsSimd(Items[Item.Neck]);
+            AddStatsSimd(Items[Item.Shoulder]);
+            AddStatsSimd(Items[Item.Back]);
+            AddStatsSimd(Items[Item.Chest]);
+            AddStatsSimd(Items[Item.Wrist]);
+            AddStatsSimd(Items[Item.Hand]);
+            AddStatsSimd(Items[Item.Waist]);
+            AddStatsSimd(Items[Item.Leg]);
+            AddStatsSimd(Items[Item.Feet]);
+            AddStatsSimd(Items[Item.Wand]);
+            AddStatsSimd(Items[Item.Wep]);
+            AddStatsSimd(Ring1);
+            AddStatsSimd(Ring2);
+            AddStatsSimd(Trinket1);
+            AddStatsSimd(Trinket2);
         }
-        public Stat[] Stats { get; }
-        public Item[] Items { get; }
+        void AddConstants() {
+            Stats[Stat.Intel] += 40 + 19 + 126; // arcane int, imp gotw, orc race
+            Stats[Stat.Sp] += (short)SPellstrikeBonus;
+            Stats[Stat.ShadSP] += (short)T4_2Bonus;
 
-        public Item Ring1 { get; set; }
-        public Item Ring2 { get; set; }
-        public Item Trinket1 { get; set; }
-        public Item Trinket2 { get; set; }
+            Stats[Stat.Hit] += 38; // Totem of wrath
+            Stats[Stat.Crit] += 66; //  totem of wrath
+            Stats[Stat.Spirit] += 20 + 19 + 50 + 134;// buffs
+            Stats[Stat.ShadSP] += 80; // pure death
+            Stats[Stat.Sp] += 42 + 130 + 101 + 23; // wizard oil, demonic aegis, wrath of air, foodbuff
+
+        }
+
+        void Multiplications() {
+            var spirit = Stats[Stat.Spirit];
+            Stats[Stat.Spirit] += (short)(spirit * 0.1); // kings
+            Stats[Stat.Spirit] -= (short)(spirit * 0.05); // demonic embrace reduction
+            Stats[Stat.Sp] += (short)(spirit * 0.1); // imp divine spirit
+
+            Stats[Stat.Intel] += (short)(Stats[Stat.Intel] * 0.1); // kings
+
+
+        }
+        void AddStatsSimd(Item itm) {
+            var a = new Vector<short>(Stats);
+            var b = new Vector<short>(itm.Stats);
+            (a + b).CopyTo(Stats);
+        }
+        
+        public short[] Stats;
+        public Item[] Items;
+
+        public readonly Item Ring1;
+        public readonly Item Ring2;
+        public readonly Item Trinket1;
+        public readonly Item Trinket2;
 
         public Stat GloveEnchant { get; set; }
 
         int ShadowDmg {
             get {
-                return Stats[Stat.Sp].Value + Stats[Stat.ShadSP].Value;
+                return Stats[Stat.Sp] + Stats[Stat.ShadSP];
             }
         }
 
         double Haste { get {
-                return Stats[Stat.Haste].Value / 15.77;
+                return Stats[Stat.Haste] / 15.77;
             } }
 
         double Hit {
             get {
-                return Math.Min(16.0, Stats[Stat.Hit].Value / 12.6);//3=shaman totem
+                return Math.Min(16.0, Stats[Stat.Hit] / 12.6);//3=shaman totem
             }
         }
         double Crit {
             get {
                 return 
-                    + 1.701+ Stats[Stat.Intel].Value / 82.0
-                    + Stats[Stat.Crit].Value / 22.08
+                    + 1.701+ Stats[Stat.Intel] / 82.0
+                    + Stats[Stat.Crit] / 22.08
                     + 3 + 5; //talents
             }
         }
         double CritBonus {
             get {
-                if (Items[Item.Head].Sockets.Any(x => x.EquippedGem == Gem.MetaGem))
+                if(Items[Item.Head].HasMetaGem)
                     return 1.09;
                 return 1.0;
             }
         }
+
         const double Misery = 1.05;
         const double Sw = 1.1;
         const double Sm = 0.0;
@@ -146,15 +151,21 @@ namespace LockSim2._4._3
 
         double T4_2Bonus {
             get {
-                return Items.Count(x => x.Set == Item.ESet.T4) >= 2
-                ? (1.0 - Math.Pow((1.0 - 0.05),(10.0 * LandedSpellsPerSec))) * 135
-                : 0;
+                int t4count = 0;
+                t4count += Items[Item.Head].Set == Item.ESet.T4 ? 1 : 0;
+                t4count += Items[Item.Shoulder].Set == Item.ESet.T4 ? 1 : 0;
+                t4count += Items[Item.Chest].Set == Item.ESet.T4 ? 1 : 0;
+                t4count += Items[Item.Hand].Set == Item.ESet.T4 ? 1 : 0;
+                t4count += Items[Item.Leg].Set == Item.ESet.T4 ? 1 : 0;
+                if (t4count >= 2)
+                    return (1.0 - Math.Pow((1.0 - 0.05), (10.0 * LandedSpellsPerSec))) * 135;
+                return 0;
             }
         }
         double SPellstrikeBonus { get {
-                return Items.Count(x => x.Set == Item.ESet.Spellstrike) >= 2
-                ? (1.0 - Math.Pow((1.0 - 0.05), (15.0 * LandedSpellsPerSec))) * 92
-                : 0;
+                if (Items[Item.Head].Set == Item.ESet.Spellstrike && Items[Item.Leg].Set == Item.ESet.Spellstrike)
+                    return (1.0 - Math.Pow((1.0 - 0.05), (15.0 * LandedSpellsPerSec))) * 92;
+                return 0;
             } }
         double LandedSpellsPerSec {
             get {
@@ -169,7 +180,7 @@ namespace LockSim2._4._3
             get {
                 double v = (572.0 + ShadowDmg * (0.856 + Sf * 0.04));
                 v*= (1.0 - Math.Max(1.0, 17.0 - Hit) / 100.0);
-                v *= (1.0 + Crit / 100.0 * (0.5 + Ruin * 0.5) * CritBonus);
+                v *= 1.0 + Crit / 100.0 * (0.5 + Ruin * 0.5) * CritBonus;
                 v *= 1.15;
                 v *= Sw * Misery * (1 + Sm / 50) * (1 + ImpSB * 0.04 * IsbUptime) * Cos;
                 return v;

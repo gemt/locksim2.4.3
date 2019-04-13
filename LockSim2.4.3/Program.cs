@@ -105,7 +105,6 @@ namespace LockSim2._4._3
                                 foreach (var character in newCharacters) {
                                     CheckNewCharacter(character);
                                 }
-                                //Interlocked.Increment(ref processCount);
                             }
                         }
                     } else {
@@ -117,7 +116,7 @@ namespace LockSim2._4._3
 
 
         static void Main(string[] args) {
-            var lines = File.ReadAllLines(@"C:\Users\G3m7\Documents\git\LockSim2.4.3\items2.csv");
+            var lines = File.ReadAllLines(@"C:\Users\G3m7\Documents\git\LockSim2.4.3\fullbis.csv");
             List<Item> items = new List<Item>();
             for(int i = 0; i < lines.Length; i++) {
                 var line = lines[i]; 
@@ -343,26 +342,37 @@ namespace LockSim2._4._3
             }
 
             bool hasMeta = (stats[13].Length > 0);
+            List<Socket> chosenSocketsBonus = new List<Socket>();
+            // vestments of sea wich, creating some additional copies with epic gems
+            if (itemId == 30107) { // YYB
+                HandleVestment(intellect, stam, sp, shadow, hit, crit, haste, spirit, mp5, sockets, socketBonus, itemId, set, name, slot, items);
+                return items;
+            }
 
-            //Combinations<Gem> combs = new Combinations<Gem>(Gem.Gems, sockets.Count);
-            /*
-            Variations<Gem> combs = new Variations<Gem>(Gem.Gems, sockets.Count, GenerateOption.WithRepetition);
-            for(int combNum = 0; combNum < combs.Count; combNum++) {
-                var comb = combs.ElementAt(combNum);
-                
+            // if socketbonus is useless, just create one red gem copy
+            if (socketBonus.Value.Type == Stat.Stam) {
+                var itemStats = new Stat[9];
+                itemStats[0] = new Stat(Stat.Intel, intellect);
+                itemStats[1] = new Stat(Stat.Stam, stam);
+                itemStats[2] = new Stat(Stat.Sp, sp);
+                itemStats[3] = new Stat(Stat.ShadSP, shadow);
+                itemStats[4] = new Stat(Stat.Hit, hit);
+                itemStats[5] = new Stat(Stat.Crit, crit);
+                itemStats[6] = new Stat(Stat.Haste, haste);
+                itemStats[7] = new Stat(Stat.Spirit, spirit);
+                itemStats[8] = new Stat(Stat.Mp5, mp5);
                 List<Socket> chosenSockets = new List<Socket>();
+                for (int i = 0; i < sockets.Count; i++) {
+                    chosenSockets.Add(new Socket(sockets[i], Gem.Gems[2]));
+                }
+
                 if (hasMeta)
                     chosenSockets.Add(new Socket(eColor.Meta, Gem.MetaGem));
-                Debug.Assert(sockets.Count == comb.Count);
-                for(int i = 0; i < sockets.Count; i++) {
-                    chosenSockets.Add(new Socket(sockets[i], comb[i]));
-                }
-                items.Add(new Item(slot, name, itemStats, chosenSockets.ToArray(), socketBonus, set, itemId*100+combNum));
+                items.Add(new Item(slot, name, itemStats, chosenSockets.ToArray(), socketBonus, set, itemId * 100 + 1));
+                return items;
             }
-            */
-            //socket bonus 
-            List<Socket> chosenSocketsBonus = new List<Socket>();
-            
+
+            // go for socket bonus
             {
                 var itemStats = new Stat[9];
                 itemStats[0] = new Stat(Stat.Intel, intellect);
@@ -392,6 +402,10 @@ namespace LockSim2._4._3
                 if (hasMeta)
                     chosenSocketsBonus.Add(new Socket(eColor.Meta, Gem.MetaGem));
                 items.Add(new Item(slot, name, itemStats, chosenSocketsBonus.ToArray(), socketBonus, set, itemId * 100));
+
+                // If all sockets in the item was red anyway, just ignore the red socket copy and return
+                if (!sockets.Any(x => x != eColor.Red && x != eColor.Meta))
+                    return items;
             }
             
             // red socket
@@ -407,80 +421,75 @@ namespace LockSim2._4._3
                 itemStats[7] = new Stat(Stat.Spirit, spirit);
                 itemStats[8] = new Stat(Stat.Mp5, mp5);
                 List<Socket> chosenSockets = new List<Socket>();
-                bool anyNewGems = false;
                 for (int i = 0; i < sockets.Count; i++) {
                     chosenSockets.Add(new Socket(sockets[i], Gem.Gems[2]));
-                    //if (chosenSockets[i].EquippedGem != chosenSocketsBonus[i].EquippedGem)
-                        anyNewGems = true;
                 }
 
-                // avoid duplicating the item when the socketing done when going for socketbonus is the same as when going full red...
-                if (anyNewGems) {
-                    if (hasMeta)
-                        chosenSockets.Add(new Socket(eColor.Meta, Gem.MetaGem));
-                    items.Add(new Item(slot, name, itemStats, chosenSockets.ToArray(), socketBonus, set, itemId * 100+1));
-                }
+                if (hasMeta)
+                    chosenSockets.Add(new Socket(eColor.Meta, Gem.MetaGem));
+                items.Add(new Item(slot, name, itemStats, chosenSockets.ToArray(), socketBonus, set, itemId * 100+1));
             }
 
-            // vestments of sea wich, creating some additional copies with epic gems
-            if (itemId == 30107) { // YYB
-                {   // hitsp+hitstam
-                    var itemStats = new Stat[9];
-                    itemStats[0] = new Stat(Stat.Intel, intellect);
-                    itemStats[1] = new Stat(Stat.Stam, stam);
-                    itemStats[2] = new Stat(Stat.Sp, sp);
-                    itemStats[3] = new Stat(Stat.ShadSP, shadow);
-                    itemStats[4] = new Stat(Stat.Hit, hit);
-                    itemStats[5] = new Stat(Stat.Crit, crit);
-                    itemStats[6] = new Stat(Stat.Haste, haste);
-                    itemStats[7] = new Stat(Stat.Spirit, spirit);
-                    itemStats[8] = new Stat(Stat.Mp5, mp5);
-                    List<Socket> chosenSockets = new List<Socket>();
-                    chosenSockets.Add(new Socket(sockets[0], Gem.HitSp));
-                    chosenSockets.Add(new Socket(sockets[1], Gem.Gems[1]));
-                    chosenSockets.Add(new Socket(sockets[2], Gem.HitStam));
-                    items.Add(new Item(slot, name, itemStats, chosenSockets.ToArray(), socketBonus, set, itemId * 100 + 2));
-                }
-                /*
-                {   // hitsp
-                    var itemStats = new Stat[9];
-                    itemStats[0] = new Stat(Stat.Intel, intellect);
-                    itemStats[1] = new Stat(Stat.Stam, stam);
-                    itemStats[2] = new Stat(Stat.Sp, sp);
-                    itemStats[3] = new Stat(Stat.ShadSP, shadow);
-                    itemStats[4] = new Stat(Stat.Hit, hit);
-                    itemStats[5] = new Stat(Stat.Crit, crit);
-                    itemStats[6] = new Stat(Stat.Haste, haste);
-                    itemStats[7] = new Stat(Stat.Spirit, spirit);
-                    itemStats[8] = new Stat(Stat.Mp5, mp5);
-                    List<Socket> chosenSockets = new List<Socket>();
-                    chosenSockets.Add(new Socket(sockets[0], Gem.HitSp));
-                    chosenSockets.Add(new Socket(sockets[1], Gem.Gems[1]));
-                    chosenSockets.Add(new Socket(sockets[2], Gem.Gems[0]));
-                    items.Add(new Item(slot, name, itemStats, chosenSockets.ToArray(), socketBonus, set, itemId * 100 + 3));
-                }
 
-                {   // hitstam
-                    var itemStats = new Stat[9];
-                    itemStats[0] = new Stat(Stat.Intel, intellect);
-                    itemStats[1] = new Stat(Stat.Stam, stam);
-                    itemStats[2] = new Stat(Stat.Sp, sp);
-                    itemStats[3] = new Stat(Stat.ShadSP, shadow);
-                    itemStats[4] = new Stat(Stat.Hit, hit);
-                    itemStats[5] = new Stat(Stat.Crit, crit);
-                    itemStats[6] = new Stat(Stat.Haste, haste);
-                    itemStats[7] = new Stat(Stat.Spirit, spirit);
-                    itemStats[8] = new Stat(Stat.Mp5, mp5);
-                    List<Socket> chosenSockets = new List<Socket>();
-                    chosenSockets.Add(new Socket(sockets[0], Gem.Gems[1]));
-                    chosenSockets.Add(new Socket(sockets[1], Gem.Gems[1]));
-                    chosenSockets.Add(new Socket(sockets[2], Gem.HitStam));
-                    items.Add(new Item(slot, name, itemStats, chosenSockets.ToArray(), socketBonus, set, itemId * 100 + 4));
-                }
-                */
+
+            return items;
+        }
+        static void HandleVestment(short intellect, short stam, short sp, short shadow, short hit, short crit, short haste, short spirit, short mp5,
+            List<eColor> sockets, Stat? socketBonus, int itemId, Item.ESet? set, string name, int slot, List<Item> items) {
+            {   // hitsp+hitstam
+                var itemStats = new Stat[9];
+                itemStats[0] = new Stat(Stat.Intel, intellect);
+                itemStats[1] = new Stat(Stat.Stam, stam);
+                itemStats[2] = new Stat(Stat.Sp, sp);
+                itemStats[3] = new Stat(Stat.ShadSP, shadow);
+                itemStats[4] = new Stat(Stat.Hit, hit);
+                itemStats[5] = new Stat(Stat.Crit, crit);
+                itemStats[6] = new Stat(Stat.Haste, haste);
+                itemStats[7] = new Stat(Stat.Spirit, spirit);
+                itemStats[8] = new Stat(Stat.Mp5, mp5);
+                List<Socket> chosenSockets = new List<Socket>();
+                chosenSockets.Add(new Socket(sockets[0], Gem.HitSp));
+                chosenSockets.Add(new Socket(sockets[1], Gem.Gems[1]));
+                chosenSockets.Add(new Socket(sockets[2], Gem.HitStam));
+                items.Add(new Item(slot, name, itemStats, chosenSockets.ToArray(), socketBonus, set, itemId * 100 + 2));
             }
 
-             return items;
+            {   // hitsp
+                var itemStats = new Stat[9];
+                itemStats[0] = new Stat(Stat.Intel, intellect);
+                itemStats[1] = new Stat(Stat.Stam, stam);
+                itemStats[2] = new Stat(Stat.Sp, sp);
+                itemStats[3] = new Stat(Stat.ShadSP, shadow);
+                itemStats[4] = new Stat(Stat.Hit, hit);
+                itemStats[5] = new Stat(Stat.Crit, crit);
+                itemStats[6] = new Stat(Stat.Haste, haste);
+                itemStats[7] = new Stat(Stat.Spirit, spirit);
+                itemStats[8] = new Stat(Stat.Mp5, mp5);
+                List<Socket> chosenSockets = new List<Socket>();
+                chosenSockets.Add(new Socket(sockets[0], Gem.HitSp));
+                chosenSockets.Add(new Socket(sockets[1], Gem.Gems[1]));
+                chosenSockets.Add(new Socket(sockets[2], Gem.Gems[0]));
+                items.Add(new Item(slot, name, itemStats, chosenSockets.ToArray(), socketBonus, set, itemId * 100 + 3));
+            }
+
+            {   // hitstam
+                var itemStats = new Stat[9];
+                itemStats[0] = new Stat(Stat.Intel, intellect);
+                itemStats[1] = new Stat(Stat.Stam, stam);
+                itemStats[2] = new Stat(Stat.Sp, sp);
+                itemStats[3] = new Stat(Stat.ShadSP, shadow);
+                itemStats[4] = new Stat(Stat.Hit, hit);
+                itemStats[5] = new Stat(Stat.Crit, crit);
+                itemStats[6] = new Stat(Stat.Haste, haste);
+                itemStats[7] = new Stat(Stat.Spirit, spirit);
+                itemStats[8] = new Stat(Stat.Mp5, mp5);
+                List<Socket> chosenSockets = new List<Socket>();
+                chosenSockets.Add(new Socket(sockets[0], Gem.Gems[1]));
+                chosenSockets.Add(new Socket(sockets[1], Gem.Gems[1]));
+                chosenSockets.Add(new Socket(sockets[2], Gem.HitStam));
+                items.Add(new Item(slot, name, itemStats, chosenSockets.ToArray(), socketBonus, set, itemId * 100 + 4));
+            }
+
         }
     }
 }
